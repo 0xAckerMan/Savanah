@@ -1,8 +1,13 @@
 package main
 
 import (
+    "errors"
 	"fmt"
 	"net/http"
+)
+
+var (
+    ErrRecordNotFound = errors.New("record searched could not be found")
 )
 
 func (app *Application) logError (r *http.Request, err error){
@@ -31,4 +36,9 @@ func (app *Application) notFoundResponse(w http.ResponseWriter, r *http.Request)
 func (app *Application) methodNotAllowedResponse(w http.ResponseWriter, r * http.Request){
     message := fmt.Sprintf("Method %s is not allowed for this operation", r.Method)
     app.errorResponse(w, r, http.StatusMethodNotAllowed, message)
+}
+
+func (app *Application) errDuplicateUser(w http.ResponseWriter, r *http.Request){
+    message := "Sorry their are some conflic and duplicated data"
+    app.errorResponse(w,r,http.StatusConflict, message)
 }
