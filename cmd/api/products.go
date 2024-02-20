@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/0xAckerMan/Savanah/internal/data"
+	"github.com/0xAckerMan/Savanah/internal/validator"
 )
 
 func (app *Application) handle_getProduct(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +56,7 @@ func (app *Application) handle_createProduct(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		app.badRequestResponse(w, r, err)
 		return
-	}
+    }
 
 	Product := &data.Product{
 		ProductName: input.ProductName,
@@ -113,6 +114,13 @@ func (app *Application) handle_updateProduct(w http.ResponseWriter, r *http.Requ
 	}
 
     product.Version ++
+
+	v := validator.New()
+
+	if data.ValidateProduct(v, &product); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
 
     result := app.DB.Save(&product)
     if result.Error != nil{
