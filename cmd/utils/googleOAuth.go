@@ -46,7 +46,7 @@ func GetGoogleOAuthToken(code string) (*Google0AuthToken, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("Failed to get Google OAuth token")
+		return nil, errors.New("failed to get Google OAuth token")
 	}
 
 	var resBody bytes.Buffer
@@ -102,7 +102,7 @@ func GetGoogleUserInfo(accessToken string, id_token string) (*GoogleUserInfo, er
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("Failed to get Google user info")
+		return nil, errors.New("failed to get Google user info")
 	}
 
 	var resBody bytes.Buffer
