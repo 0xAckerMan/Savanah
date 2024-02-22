@@ -42,3 +42,12 @@ func (app *Application) errDuplicateUser(w http.ResponseWriter, r *http.Request)
     message := "Sorry their are some conflic and duplicated data"
     app.errorResponse(w,r,http.StatusConflict, message)
 }
+
+func (app *Application) failedValidationResponse(w http.ResponseWriter, r *http.Request, errors map[string]string) {
+    app.errorResponse(w, r, http.StatusUnprocessableEntity, errors)
+}
+
+func (app *Application) UnAuthorizedResponse(w http.ResponseWriter, r *http.Request){
+    message := "Sorry you are not authorized to perform this operation"
+    app.errorResponse(w, r, http.StatusUnauthorized, message)
+}
