@@ -20,7 +20,7 @@ func Sendmessage (to string, order *data.Order) {
 	// Define a request for the Bulk SMS request
 	bulkRequest := &sms.BulkRequest{
 		To:            []string{"+254723285857"},
-		Message:       fmt.Sprintf("Hello, %s, your order for %s has been received and is being processed", order.CustomerID, order.Product.ProductName),
+		Message:       fmt.Sprintf("hello, %s, your order for %s has been received and is being processed", order.CustomerID, order.Product.ProductName),
 		From:          "",
 		BulkSMSMode:   true,
 		RetryDuration: time.Hour,
