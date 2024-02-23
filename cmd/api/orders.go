@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	"github.com/0xAckerMan/Savanah/cmd/utils"
 	"github.com/0xAckerMan/Savanah/internal/data"
 	"github.com/0xAckerMan/Savanah/internal/validator"
 )
@@ -49,7 +50,6 @@ func (app *Application) handle_getSingleOrder(w http.ResponseWriter, r *http.Req
 //customer create order
 func (app *Application) handle_createOrder(w http.ResponseWriter, r *http.Request) {
     var input struct {
-        CustomerID uint `json:"customer_id"`
         ProductID  uint `json:"product_id"`
         Quantity   int `json:"quantity"`
     }
@@ -61,7 +61,7 @@ func (app *Application) handle_createOrder(w http.ResponseWriter, r *http.Reques
     }
 
     order := &data.Order{
-        CustomerID: input.CustomerID,
+        CustomerID: r.Context().Value("customer").(data.Customer).ID,
         ProductID:  input.ProductID,
         Quantity:   input.Quantity,
     }
@@ -78,6 +78,8 @@ func (app *Application) handle_createOrder(w http.ResponseWriter, r *http.Reques
         app.serverErrorResponse(w, r, err)
         return
     }
+
+    utils.Sendmessage(r.Context().Value("customer").(data.Customer).PhoneNumber, order)
 
     err = app.writeJSON(w, http.StatusCreated, envelope{"order": order}, nil)
     if err != nil {

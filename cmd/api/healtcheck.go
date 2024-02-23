@@ -24,3 +24,11 @@ func (app *Application) healthcheck(w http.ResponseWriter, r *http.Request){
 	w.WriteHeader(http.StatusOK)
 	w.Write(js)
 }
+
+func (app *Application) Home(w http.ResponseWriter, r *http.Request){
+	message := map[string]interface{}{
+		"message": "Welcome to Savanah API",
+	}
+
+	app.writeJSON(w, http.StatusOK, message, nil)
+}

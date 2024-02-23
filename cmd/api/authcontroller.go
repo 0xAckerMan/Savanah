@@ -215,11 +215,16 @@ func (app *Application) GoogleOauth(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Application) GetMe(w http.ResponseWriter, r *http.Request) {
-	currentCustomer := r.Context().Value("customer").(data.Customer)
+    currentCustomer := r.Context().Value("customer").(data.Customer)
+
+    if err := app.DB.Preload("Orders").First(&currentCustomer, currentCustomer.ID).Error; err != nil {
+        app.serverErrorResponse(w, r, err)
+        return
+    }
 
 	err := app.writeJSON(w, http.StatusOK, envelope{"customer": currentCustomer}, nil)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
+    if err != nil {
+        app.serverErrorResponse(w, r, err)
+        return
+    }
 }
