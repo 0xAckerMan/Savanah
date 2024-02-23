@@ -1,6 +1,6 @@
 module github.com/0xAckerMan/Savanah
 
-go 1.21.5
+go 1.21
 
 require (
 	github.com/edwinwalela/africastalking-go v0.0.3

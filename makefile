@@ -1,9 +1,13 @@
 pwd := "./cmd/api"
 
+run-build: build
+	@echo "Running the build app"
+	@./build/main
+
 # Path: makefile
 build:
 	@echo "Building the application..."
-	@go build -o $(pwd)/api $(pwd)/main.go
+	@go build -o ./build $(pwd)/main.go
 
 # Path: makefile
 run:

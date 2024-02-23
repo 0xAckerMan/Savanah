@@ -17,7 +17,6 @@ func Sendmessage (to string, order *data.Order) {
 		IsSandbox: true,
 	}
 
-	// Define a request for the Bulk SMS request
 	bulkRequest := &sms.BulkRequest{
 		To:            []string{to},
 		Message:       fmt.Sprintf("hello, %s, your order for %s has been received and is being processed", order.CustomerID, order.Product.ProductName),
@@ -26,7 +25,6 @@ func Sendmessage (to string, order *data.Order) {
 		RetryDuration: time.Hour,
 	}
 
-	// Send SMS to the defined recipients
 	response, err := client.SendBulk(bulkRequest)
 	if err != nil {
 		fmt.Println(err)

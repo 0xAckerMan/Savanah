@@ -1,50 +1,13 @@
-ARG GO_VERSION=1.20
-ARG ALPINE_VERSION=3.14
-ARG APP_NAME=app
-ARG APP_VERSION=0.0.1
-ARG APP_PORT=8080
-ARG APP_PATH=/app
-ARG APP_USER=app
-ARG APP_GROUP=app
-ARG APP_USER_ID=1000
-ARG APP_GROUP_ID=1000
-ARG APP_WORKDIR=/app
-ARG APP_BIN_DIR=/app/bin
-ARG APP_CONFIG_DIR=/app/config
-ARG APP_LOG_DIR=/app/log
-ARG APP_TMP_DIR=/app/tmp
-ARG APP_DATA_DIR=/app/data
-ARG APP_CACHE_DIR=/app/cache
-ARG APP_RUN_DIR=/app/run
-
-
-# Path: DockerFile
-FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
-
-# Path: DockerFile
-ARG APP_NAME
-ARG APP_VERSION
-ARG APP_PATH
-ARG APP_USER
-ARG APP_GROUP
-ARG APP_USER_ID
-ARG APP_GROUP_ID
-ARG APP_WORKDIR
-
-# Path: DockerFile
-RUN apk add --no-cache git
-
-# Path: DockerFile
-WORKDIR ${APP_WORKDIR}
-
-# Path: DockerFile
-COPY go.mod go.sum ./
-
-# Path: DockerFile
-RUN go mod download
-
-# Path: DockerFile
+FROM golang:1.19.2-bullseye
+ 
+WORKDIR /app
+ 
 COPY . .
-
-# Path: DockerFile
-RUN go build -o ${APP_NAME} .
+ 
+RUN go mod download
+ 
+RUN go build -o /app/api ./cmd/api
+ 
+EXPOSE 8080
+ 
+CMD [ "/app/api" ]

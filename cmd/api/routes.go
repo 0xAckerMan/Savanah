@@ -47,10 +47,9 @@ func (app *Application) routes() chi.Router {
 		})
 
 
-		r.Route("/customers", func(r chi.Router) {
+		
 			r.Post("/register", app.SignUpCustomer)
 			r.Post("/login", app.SignInCustomer)
-		})
 
 	})
 

@@ -37,7 +37,6 @@ func (app *Application) handle_getCustomers(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-
 func (app *Application) handle_getSingleCustomer(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r)
 	if err != nil {
@@ -51,70 +50,6 @@ func (app *Application) handle_getSingleCustomer(w http.ResponseWriter, r *http.
 		return
 	}
 	err = app.writeJSON(w, http.StatusOK, envelope{"customer": &customer}, nil)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
-}
-
-func (app *Application) handle_createCustomer(w http.ResponseWriter, r *http.Request) {
-	var input struct {
-		FirstName   string `json:"first_name"`
-		LastName    string `json:"last_name"`
-		Email       string `json:"email"`
-		PhoneNumber string `json:"phone_number"`
-		Password    string `json:"password"`
-		IsAdmin     bool   `json:"is_admin"`
-	}
-
-	err := app.readJSON(w, r, &input)
-	if err != nil {
-		app.badRequestResponse(w, r, err)
-		return
-	}
-
-	customer := &data.Customer{
-		FirstName:   input.FirstName,
-		LastName:    input.LastName,
-		Email:       input.Email,
-		PhoneNumber: input.PhoneNumber,
-		IsAdmin:     input.IsAdmin,
-	}
-
-	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), 12)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
-
-	customer.Password = string(hash)
-
-	v := validator.New()
-
-	if data.ValidateUser(v, customer); !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
-		return
-	}
-
-	v = validator.New()
-
-	if data.ValidateUser(v, customer); !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
-		return
-	}
-
-	result := app.DB.Create(&customer)
-	if result.Error != nil {
-		switch {
-		case errors.Is(result.Error, gorm.ErrDuplicatedKey):
-			app.errDuplicateUser(w,r)
-		default:
-			app.serverErrorResponse(w, r, err)
-			return
-		}
-	}
-
-	err = app.writeJSON(w, http.StatusOK, envelope{"Customer": customer}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
@@ -204,7 +139,7 @@ func (app *Application) handle_updateCustomer(w http.ResponseWriter, r *http.Req
 	}
 }
 
-//delete customer
+
 func (app *Application) handle_deleteCustomer(w http.ResponseWriter, r *http.Request) {
 	id,err := app.readIDParam(r)
 	if err != nil {
@@ -223,45 +158,6 @@ func (app *Application) handle_deleteCustomer(w http.ResponseWriter, r *http.Req
 		return
 	}
 }
-
-//0auth token generation
-// func (app *Application) handle_login(w http.ResponseWriter, r *http.Request) {
-// 	var input struct {
-// 		Email    string `json:"email"`
-// 		Password string `json:"password"`
-// 	}
-
-// 	err := app.readJSON(w, r, &input)
-// 	if err != nil {
-// 		app.badRequestResponse(w, r, err)
-// 		return
-// 	}
-
-// 	customer := &data.Customer{Email: input.Email}
-// 	result := app.DB.First(&customer)
-// 	if result.Error != nil {
-// 		app.notFoundResponse(w, r)
-// 		return
-// 	}
-
-// 	err = bcrypt.CompareHashAndPassword([]byte(customer.Password), []byte(input.Password))
-// 	if err != nil {
-// 		app.notFoundResponse(w, r)
-// 		return
-// 	}
-
-// 	token, err := app.createToken(customer.ID, customer.IsAdmin)
-// 	if err != nil {
-// 		app.serverErrorResponse(w, r, err)
-// 		return
-// 	}
-
-// 	err = app.writeJSON(w, http.StatusOK, envelope{"token": token}, nil)
-// 	if err != nil {
-// 		app.serverErrorResponse(w, r, err)
-// 		return
-// 	}
-// }
 
 func (app *Application)handle_getMyOrders(w http.ResponseWriter, r *http.Request){
 	var orders []*data.Order
