@@ -1,0 +1,49 @@
+name: Go CI/CD to Azure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.21' # Specify your desired Go version here
+
+    - name: Install PostgreSQL client
+      run: sudo apt-get install postgresql-client
+
+    - name: Build
+      run: go build -v . ./cmd/api/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Azure CLI
+      uses: azure/CLI@v1
+      with:
+        azcliversion: latest
+        azlogin: true
+
+    - name: Log in to Azure
+      run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+    - name: Set PostgreSQL connection string
+      run: echo "export DATABASE_URL='POSTGRES_CONNECTION_STRING'" >> $GITHUB_ENV
+
+
+    - name: Deploy to Azure
+      run: az webapp up -n YOUR_APP_NAME -g RESOURCE_GROUP_NAME
