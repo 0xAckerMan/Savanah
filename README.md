@@ -1,6 +1,6 @@
 # Savannah
 
-This is a Go web application for the Savannah e-Shop project, built using Go standard library, go-chi and OAuth authentication. The application also uses Africa's Talking for sending SMS notifications
+This is a Go web application for the Savannah e-Shop project, built using Go standard library, go-chi and OAuth authentication. The application also uses Africa's Talking for sending SMS notifications and Azure for hosting.
 
 ## Features
 - Create and manage customer records.
@@ -8,6 +8,8 @@ This is a Go web application for the Savannah e-Shop project, built using Go sta
 - Demo callback endpoint for OAuth2 authentication.
 - Send SMS notifications using Africa's Talking.
 - PostgreSQL database
+- Circle ci pipeline
+- Azure
 
 ## Installation
 To run this application locally, follow this step:
