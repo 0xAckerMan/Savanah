@@ -1,0 +1,36 @@
+version: 2.1
+orbs:
+  go: circleci/go@1.7.3
+jobs:
+  build-and-run-test:
+    executor:
+      name: go/default
+      tag: "1.19.2"
+    steps:
+      - checkout
+      - go/load-cache
+      - go/mod-download
+      - go/save-cache
+      - run:
+          name: Run tests
+          command: go test -v
+  build-docker-image:
+    docker:
+      - image: cimg/go:1.19.2
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      -run:
+        name: Build and push Docker image
+        command: |
+          docker build -t savanna.azurecr.io/savanna:latest .
+          docker login -u $DOCKER_USER -p $DOCKER_PASS savanna.azurecr.io
+          docker push savanna.azurecr.io/savanna:latest
+workflows:
+  test-and-deploy:
+    jobs:
+      - build-and-run-test
+      - build-docker-image:
+          requires:
+            - build-and-run-test
