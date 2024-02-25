@@ -43,7 +43,7 @@ func (app *Application) DeserializeCustomer(next http.Handler) http.Handler {
 
         // Set current user to user context
         ctx := r.Context()
-        ctx = context.WithValue(ctx, "Customer", customer)
+        ctx = context.WithValue(ctx, "customer", customer)
         next.ServeHTTP(w, r.WithContext(ctx))
     })
 }

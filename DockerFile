@@ -11,3 +11,24 @@ RUN go build -o /app/api ./cmd/api
 EXPOSE 8080
  
 CMD [ "/app/api" ]
+
+
+# FROM golang:1.19.2-bullseye AS builder
+
+# WORKDIR /app
+
+# COPY . .
+
+# RUN go mod download
+
+# RUN go build -o /app/api ./cmd/api
+
+# FROM postgres:latest
+
+# COPY --from=builder /app/api /app/api
+
+# WORKDIR /app
+
+# EXPOSE 8080
+
+# CMD [ "/app/api" ]

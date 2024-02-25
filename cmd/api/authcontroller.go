@@ -114,7 +114,7 @@ func (app *Application) SignInCustomer(w http.ResponseWriter, r *http.Request) {
 		Domain:   "localhost",
 	})
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"customer": customer}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"token": token}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
@@ -217,7 +217,7 @@ func (app *Application) GoogleOauth(w http.ResponseWriter, r *http.Request) {
 func (app *Application) GetMe(w http.ResponseWriter, r *http.Request) {
     currentCustomer := r.Context().Value("customer").(data.Customer)
 
-    if err := app.DB.Preload("Orders").First(&currentCustomer, currentCustomer.ID).Error; err != nil {
+    if err := app.DB.Preload("Orders").Preload("Orders.Product").First(&currentCustomer, currentCustomer.ID).Error; err != nil {
         app.serverErrorResponse(w, r, err)
         return
     }

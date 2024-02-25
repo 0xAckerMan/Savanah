@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/0xAckerMan/Savanah/cmd/utils"
+	// "github.com/0xAckerMan/Savanah/cmd/utils"
 	"github.com/0xAckerMan/Savanah/internal/data"
 	"github.com/0xAckerMan/Savanah/internal/validator"
 )
@@ -73,13 +73,13 @@ func (app *Application) handle_createOrder(w http.ResponseWriter, r *http.Reques
         return
     }
 
-    err = app.DB.Create(&order).Error
+    err = app.DB.Preload("Customer").Preload("Product").Create(&order).Error
     if err != nil {
         app.serverErrorResponse(w, r, err)
         return
     }
 
-    utils.Sendmessage(r.Context().Value("customer").(data.Customer).PhoneNumber, order)
+    // utils.Sendmessage(r.Context().Value("customer").(data.Customer).PhoneNumber, order)
 
     err = app.writeJSON(w, http.StatusCreated, envelope{"order": order}, nil)
     if err != nil {
