@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/0xAckerMan/Savanah/internal/data"
@@ -11,12 +12,15 @@ import (
 )
 
 func (app *Application) handle_getCustomers(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("entering handler")
 	var customers []data.Customer
+	fmt.Println("created the array")
 	result := app.DB.Preload("Orders").Preload("Orders.Product").Find(&customers)
 	if result.Error != nil {
 		app.serverErrorResponse(w, r, result.Error)
 		return
 	}
+	fmt.Println(customers, "from the db")
 	if result.RowsAffected == 0 {
 		app.writeJSON(w, http.StatusOK, envelope{"response": "No customers available"}, nil)
 		return
